@@ -1,6 +1,12 @@
 #include <iostream>
 #include <algorithm>
 using namespace std;
+/*
+*
+* 9명의 난쟁이 중에 7명의 난쟁이를 골라 키의 합이 100이 되도록 하는 해를 찾는
+* Brute Force 소스 코드
+* 
+ */
 int main(void)
 {
 	int d[9], a[7];
