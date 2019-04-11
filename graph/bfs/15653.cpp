@@ -4,133 +4,121 @@
 #include <vector>
 #include <queue>
 #include <utility>
+#include <tuple>
+#include <cstring>
 using namespace std;
+int dx[] = {0, 0, 1, -1}; // 아래쪽, 위쪽, 오른쪽, 왼쪽
+int dy[] = {1, -1, 0, 0};
 
-int dx[] = {1, -1, 0, 0}; // 오른쪽, 왼쪽, 위쪽, 아래쪽
-int dy[] = {0, 0, 1, -1};
-
-// n은 가로 크기, m은 세로 크기
-// r은 red, b는 blue, o는 출구
-// q는 red, blue의 x,y 좌표
-int n, m;
-pair<int,int> b, r, o;
-int nrx, nry, nbx, nby, ncnt;
-int best = 1000000;
-vector<string> a(10);
-queue<pair<pair<int,int>,pair<int,int>>> q;
-queue<int> qc;
-
-// who가 0이면, r먼저 움직이고, 1이면 b먼저 움직인다.
-void next(int crx, int cry, int cbx, int cby, int who, int dir)
-{	
-	int p = 1;
-	if(!who)
+int d[10][10][10][10];
+int hx,hy;
+pair<bool,bool> bfs(vector<string> &a, int k, int &x, int &y)
+{
+	if (a[x][y] == '.') return make_pair(false, false);
+	int n = a.size();
+	int m = a[0].size();
+	bool moved = false;
+	while (true)
 	{
-		// red
-		while(true)
+		int nx = x+dx[k];
+		int ny = y+dy[k];
+		if (nx < 0 || nx >= n || ny < 0 || ny >= m)
+			return make_pair(moved, false);
+		if (a[nx][ny] == '#')
+			return make_pair(moved, false);
+		else if (a[nx][ny] == 'R' || a[nx][ny] == 'B')
+			return make_pair(moved, false);
+		else if (a[nx][ny] == '.')
 		{
-			nrx = crx + dx[dir] * p;
-			nry = cry + dy[dir] * p;
-			if(nrx >= 0 && nrx < n && nry >= 0 && nry < m)
-			{
-				if( a[nry][nrx] == 'O' )
-					break;
-				else if( a[nry][nrx] == '#' )
-				{
-					nrx -= dx[dir];
-					nry -= dy[dir];
-					break;
-				}
-			}
+			swap(a[nx][ny], a[x][y]);
+			x = nx;
+			y = ny;
+			moved = true;
 		}
-		// blue
-		while(true)
+		else if (a[nx][ny] == 'O')
 		{
-			nbx = cbx + dx[dir] * p;
-			nby = cby + dy[dir] * p;
-			if(nrx >= 0 && nrx < n && nry >= 0 && nry < m)
-			{
-				if( a[nby][nbx] == 'O' )
-					break;
-				else if( a[nby][nbx] == '#' || a[nby][nbx] == a[nry][nrx] )
-				{
-					nbx -= dx[dir];
-					nby -= dy[dir];
-					break;
-				}
-			}
+			a[x][y] = '.';
+			moved = true;
+			return make_pair(moved, true);
 		}
 	}
-	else
-	{
+	return make_pair(false, false);
+}
 
+pair<bool,bool> next(vector<string> a, int &rx, int &ry, int &bx, int &by, int dir)
+{
+	a[rx][ry] = 'R';
+	a[bx][by] = 'B';
+	bool hole1=false, hole2=false;
+	while (true)
+	{
+		auto p1 = bfs(a, dir, rx, ry);
+		auto p2 = bfs(a, dir, bx, by);
+		if (p1.first == false && p2.first == false)
+			break;
+		if (p1.second) hole1 = true;
+		if (p2.second) hole2 = true;
 	}
+	return make_pair(hole1, hole2);
 }
 
 int main(void)
 {
-	// map 받아오기
-	for(int i = 0; i < m; i++)
+	int n, m;
+	cin >> n >> m;
+	vector<string> a(n);
+	for (int i=0; i<n; i++)
 		cin >> a[i];
-
-	// r, b, o 체크
-	for(int i = 0; i < m; i++)
-		for(int j = 0; j < n; j++)
-		{
-			if(a[i][j] == 'R') r = make_pair(j,i);
-			else if(a[i][j] == 'B') b = make_pair(j,i);
-			else if(a[i][j] == 'O') o = make_pair(j,i);
-		}
-	q.push(make_pair(r, b));
-	qc.push(0);
-
-	// bfs
-	while(!q.empty())
+	int ans = -1;
+	queue<tuple<int,int,int,int>> q;
+	int rx,ry,bx,by;
+	for (int i=0; i<n; i++)
 	{
-		int crx = q.front().first.first, cry = q.front().first.second;
-		int cbx = q.front().second.first, cby = q.front().second.second;
-		ncnt = qc.front();
-		q.pop();
-		qc.pop();
-		for(int i = 0; i < 4; i++)
+		for (int j=0; j<m; j++)
 		{
-			// 오른쪽
-			if( i == 0 )
+			if (a[i][j] == 'O')
 			{
-				// red가 더 오른쪽
-				if( crx > cbx )
-					next(crx, cry, cbx, cby, 0, 0);
-				else
-					next(crx, cry, cbx, cby, 1, 0);
+				hx = i; hy = j;
 			}
-			// 왼쪽
-			else if( i == 1 )
+			else if (a[i][j] == 'R')
 			{
-				// red가 더 오른쪽
-				if( crx > cbx )
-					next(crx, cry, cbx, cby, 1, 1);
-				else
-					next(crx, cry, cbx, cby, 0, 1);
+				rx = i; ry = j;
+				a[i][j] = '.';
 			}
-			else if( i == 2 )
+			else if (a[i][j] == 'B')
 			{
-				// red가 더 아래쪽
-				if( cry > cby )
-					next(crx, cry, cbx, cby, 1, 2);
-				else
-					next(crx, cry, cbx, cby, 0, 2);
-			}
-			else
-			{
-				// red가 더 아래쪽
-				if( cry > cby )
-					next(crx, cry, cbx, cby, 0, 3);
-				else
-					next(crx, cry, cbx, cby, 1, 3);
+				bx = i; by = j;
+				a[i][j] = '.';
 			}
 		}
 	}
-
-	cout << best << "\n";
+	memset(d,-1,sizeof(d));
+	q.emplace(rx,ry,bx,by);
+	d[rx][ry][bx][by] = 0;
+	bool found = false;
+	while (!q.empty())
+	{
+		tie(rx,ry,bx,by) = q.front();
+		q.pop();
+		for (int k=0; k<4; k++)
+		{
+			bool hole1, hole2;
+			int nrx = rx, nry = ry, nbx = bx, nby = by;
+			tie(hole1,hole2) = next(a,nrx,nry,nbx,nby,k);
+			if (hole2) continue;
+			if (hole1)
+			{
+				found = true;
+				ans = d[rx][ry][bx][by] + 1;
+				break;
+			}
+			if (d[nrx][nry][nbx][nby] != -1) continue;
+			q.emplace(nrx,nry,nbx,nby);
+			d[nrx][nry][nbx][nby] = d[rx][ry][bx][by] + 1;
+		}
+		if (found)
+			break;
+	}
+	cout << ans << '\n';
 	return 0;
 }
