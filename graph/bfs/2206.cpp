@@ -16,9 +16,7 @@ int main(void)
 	for(int i = 1; i <= n; i++)
 	{
 		for(int j = 1; j <= m; j++)
-		{
 			scanf("%1d",&map[i][j]);
-		}
 	}
 	q.push(make_tuple(1,1,0));
 	w[1][1][0] = 1;
@@ -48,21 +46,13 @@ int main(void)
 	}
 
 	if(w[n][m][0] != 0 && w[n][m][1] != 0)
-	{
-	cout << min(w[n][m][0], w[n][m][1]);
-	}
+		cout << min(w[n][m][0], w[n][m][1]);
 	else if (w[n][m][0] != 0)
-	{
-	cout << w[n][m][0];
-	}
+		cout << w[n][m][0];
 	else if (w[n][m][1] != 0)
-	{
-	cout << w[n][m][1];
-	}
+		cout << w[n][m][1];
 	else
-	{
-	cout << -1;
-	}
+		cout << -1;
 	cout << '\n';
 	return 0;
 }
