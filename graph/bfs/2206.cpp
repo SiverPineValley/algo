@@ -1,4 +1,4 @@
-// 2206
+// 벽 부수고 이동하기
 #include <iostream>
 #include <cstdio>
 #include <queue>
