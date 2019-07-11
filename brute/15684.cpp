@@ -1,6 +1,5 @@
 // 사다리 조작
 #include <iostream>
-#include <utility>
 #include <cstring>
 using namespace std;
 
