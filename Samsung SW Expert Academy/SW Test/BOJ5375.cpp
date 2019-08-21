@@ -30,16 +30,32 @@ void rotSameFace(int face)
 	cube[face][1][2] = tempRot[1];
 }
 
+void rotSameFace_DOWN()
+{
+	int tempRot[3];
+	tempRot[0] = cube[D][0][2]; tempRot[1] = cube[D][0][1]; tempRot[2] = cube[D][0][0];
+	cube[D][0][0] = cube[D][0][2];
+	cube[D][0][1] = cube[D][1][2];
+	cube[D][0][2] = cube[D][2][2];
+
+	cube[D][1][2] = cube[D][2][1];
+	cube[D][2][2] = cube[D][2][0];
+
+	cube[D][2][1] = cube[D][1][0];
+	cube[D][2][0] = tempRot[2];
+	cube[D][1][0] = tempRot[1];
+}
+
 void rotUp(int isClock)
 {
 	for(int rot = 0; rot < isClock; rot++)
 	{
 		int tempRot[3];
 		tempRot[0] = cube[F][0][0]; tempRot[1] = cube[F][0][1]; tempRot[2] = cube[F][0][2];
-		cube[F][0][0] = cube[R][0][0]; cube[F][0][1] = cube[R][0][1]; cube[F][0][2] = cube[R][0][2];
-		cube[R][0][0] = cube[B][0][0]; cube[R][0][1] = cube[B][0][1]; cube[R][0][2] = cube[B][0][2];
-		cube[B][0][0] = cube[L][0][0]; cube[B][0][1] = cube[L][0][1]; cube[B][0][2] = cube[L][0][2];
-		cube[L][0][0] = tempRot[0]; cube[L][0][1] = tempRot[1]; cube[L][0][2] = tempRot[2];
+		cube[F][0][0] = cube[R][2][0]; cube[F][0][1] = cube[R][1][0]; cube[F][0][0] = cube[R][2][0];
+		cube[R][2][0] = cube[B][2][2]; cube[R][1][0] = cube[B][2][1]; cube[R][0][0] = cube[B][2][0];
+		cube[B][2][2] = cube[L][0][2]; cube[B][2][1] = cube[L][1][2]; cube[B][2][0] = cube[L][2][2];
+		cube[L][0][2] = tempRot[0]; cube[L][1][2] = tempRot[1]; cube[L][2][2] = tempRot[2];
 		rotSameFace(U);
 	}
 }
@@ -50,11 +66,11 @@ void rotDown(int isClock)
 	{
 		int tempRot[3];
 		tempRot[0] = cube[F][2][0]; tempRot[1] = cube[F][2][1]; tempRot[2] = cube[F][2][2];
-		cube[F][2][0] = cube[R][2][0]; cube[F][2][1] = cube[R][2][1]; cube[F][2][2] = cube[R][2][2];
-		cube[R][2][0] = cube[B][2][0]; cube[R][2][1] = cube[B][2][1]; cube[R][2][2] = cube[B][2][2];
-		cube[B][2][0] = cube[L][2][0]; cube[B][2][1] = cube[L][2][1]; cube[B][2][2] = cube[L][2][2];
-		cube[L][2][0] = tempRot[0]; cube[L][2][1] = tempRot[1]; cube[L][2][2] = tempRot[2];
-		rotSameFace(D);
+		cube[F][2][0] = cube[L][0][0]; cube[F][2][1] = cube[L][1][0]; cube[F][2][2] = cube[L][2][0];
+		cube[L][2][0] = cube[B][0][0]; cube[L][1][0] = cube[B][0][1]; cube[L][0][0] = cube[B][0][2];
+		cube[B][0][0] = cube[R][0][2]; cube[B][0][1] = cube[R][1][2]; cube[B][0][2] = cube[R][2][2];
+		cube[R][2][2] = tempRot[0]; cube[R][1][2] = tempRot[1]; cube[R][0][2] = tempRot[2];
+		rotSameFace_DOWN();
 	}
 }
 
@@ -93,9 +109,9 @@ void rotRight(int isClock)
 		int tempRot[3];
 		tempRot[0] = cube[U][0][2]; tempRot[1] = cube[U][1][2]; tempRot[2] = cube[U][2][2];
 		cube[U][0][2] = cube[F][0][2]; cube[U][1][2] = cube[F][1][2]; cube[U][2][2] = cube[F][2][2];
-		cube[F][0][2] = cube[D][2][0]; cube[F][1][2] = cube[D][1][0]; cube[F][2][2] = cube[D][0][0];
-		cube[D][0][0] = cube[B][0][0]; cube[D][1][0] = cube[B][1][0]; cube[D][2][0] = cube[B][2][0];
-		cube[B][2][0] = tempRot[0]; cube[B][1][0] = tempRot[1]; cube[B][0][0] = tempRot[2];
+		cube[F][0][2] = cube[D][0][0]; cube[F][1][2] = cube[D][1][0]; cube[F][2][2] = cube[D][2][0];
+		cube[D][0][0] = cube[B][0][2]; cube[D][1][0] = cube[B][1][2]; cube[D][2][0] = cube[B][2][2];
+		cube[B][0][2] = tempRot[0]; cube[B][1][2] = tempRot[1]; cube[B][2][2] = tempRot[2];
 		rotSameFace(R);
 	}
 }
@@ -106,9 +122,9 @@ void rotLeft(int isClock)
 	{
 		int tempRot[3];
 		tempRot[0] = cube[U][0][0]; tempRot[1] = cube[U][1][0]; tempRot[2] = cube[U][2][0];
-		cube[U][0][0] = cube[B][2][2]; cube[U][1][0] = cube[B][1][2]; cube[U][2][0] = cube[B][0][2];
-		cube[B][0][2] = cube[D][0][2]; cube[B][1][2] = cube[D][1][2]; cube[B][2][2] = cube[D][2][2];
-		cube[D][2][2] = cube[F][0][0]; cube[D][1][2] = cube[F][1][0]; cube[D][0][2] = cube[F][2][0];
+		cube[U][2][0] = cube[B][2][0]; cube[U][1][0] = cube[B][1][0]; cube[U][0][0] = cube[B][0][0];
+		cube[B][0][0] = cube[D][0][2]; cube[B][1][0] = cube[D][1][2]; cube[B][2][0] = cube[D][2][2];
+		cube[D][0][2] = cube[F][0][0]; cube[D][1][2] = cube[F][1][0]; cube[D][2][2] = cube[F][2][0];
 		cube[F][0][0] = tempRot[0]; cube[F][1][0] = tempRot[1]; cube[F][2][0] = tempRot[2];
 		rotSameFace(L);
 	}
@@ -163,7 +179,7 @@ int main(void)
 				rotRight(COUNTER_CLOCK);
 			else if(rotCase.compare("L+") == 0)
 				rotLeft(CLOCK);
-			else
+			else if(rotCase.compare("L-") == 0)
 				rotLeft(COUNTER_CLOCK);
 		}
 
