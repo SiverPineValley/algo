@@ -29,7 +29,7 @@ void spread()
 	while(!dust.empty())
 	{
 		int cx = dust.front().x, cy = dust.front().y, cs = dust.front().value;
-		int ns = map[cy][cx] / 5;
+		int ns = map[cy][cx] / 5; // 실수
 		dust.pop();
 
 		int able = 0;
@@ -122,7 +122,7 @@ void clean()
 			up = 1 - up;
 		}
 		else if((ny == r && nx == 1) || (ny == cleaner[1].y && nx == c)) toggle = 1 - toggle;
-		else if(ny == cleaner[1].y && nx == 1)
+		else if(ny == cleaner[1].y && nx == 1) // 실수
 		{
 			map[cy][cx] = 0;
 			break;
@@ -139,11 +139,7 @@ void clean()
 	// queue에 다시 추가
 	for(int y = 1; y <= r; y++)
 		for(int x = 1; x <= c; x++)
-			if(map[y][x] != -1 && map[y][x] != 0)
-			{
-				
-				dust.push({x,y,map[y][x]});
-			}
+			if(map[y][x] != -1 && map[y][x] != 0) dust.push({x,y,map[y][x]});
 }
 
 void simulation()
